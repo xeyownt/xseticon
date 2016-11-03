@@ -18,7 +18,7 @@ xseticon.o: xseticon.c
 	gcc ${GLIB_CFLAGS} ${XLIB_CFLAGS} -c $^ -o $@
 
 xseticon: xseticon.o
-	gcc ${LIBS} $^ -o $@
+	gcc $^ ${LIBS} -o $@
 
 .PHONY: clean
 clean:
