@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
   }
 
   if (verbose)
-    printf("Have selected window 0x%08x\n", window);
+    printf("Have selected window 0x%08lx\n", window);
 
   Atom property = XInternAtom(display, "_NET_WM_ICON", 0);
 
