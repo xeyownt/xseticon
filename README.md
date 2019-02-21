@@ -31,6 +31,16 @@ make
 # Install
 sudo cp xseticon /usr/local/bin
 ```
+On EL7:
+
+```bash
+# Install dependencies
+sudo yum install libXmu-devel gd gd-devel
+# Build
+make
+# Install
+sudo cp xseticon /usr/local/bin
+```
 
 Author
 ======
