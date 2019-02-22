@@ -35,7 +35,7 @@ On EL7:
 
 ```bash
 # Install dependencies
-sudo yum install libXmu-devel gd gd-devel
+sudo yum install libXmu-devel gd gd-devel glib2-devel
 # Build
 make
 # Install
