@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Launcher for xseticon snap
+# 林博仁(Buo-ren, Lin) <Buo.Ren.Lin@gmail.com> © 2019
+
+set \
+    -o errexit \
+    -o errtrace \
+    -o nounset \
+    -o pipefail
+
+if test $# -eq 0; then
+    true
+else
+    "${@}"
+fi

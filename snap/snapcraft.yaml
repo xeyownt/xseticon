@@ -1,0 +1,85 @@
+name: xseticon
+title: The `xseticon` command-line utility
+summary: Set icon for any given X11 window
+description: |
+  Xterm, and likely many other X11 programs, do not set themselves window icons, which window managers typically use to represent that program window in switcher lists, taskbars, and so on. This program can set the X11 window icon for any given window, to that of a given image file.
+
+  **Snap-specific information**
+
+  Due to the snap's confined nature the application can only access icons in the user's home directory.  To access icons under `/media` and `/mnt` directories you have to manually connect the snap to the `removable-media` interface by running the following command in a terminal:
+
+      sudo snap connect xseticon:removable-media
+
+license: GPL-2.0
+
+adopt-info: xseticon
+base: core
+confinement: strict
+grade: stable
+
+parts:
+  xseticon:
+    source: https://github.com/xeyownt/xseticon.git
+    override-pull: |
+      set -o nounset
+
+      if test -d /root/project; then
+        snap_project_dir=/root/project
+      else
+        snap_project_dir=../../..
+      fi
+
+      snapcraftctl pull
+      snapcraftctl set-version "$(
+        git describe \
+          --always \
+          --dirty \
+          --tags
+      )"
+
+    plugin: make
+    build-packages:
+    - gcc
+    - libgd-dev
+    - libglib2.0-dev
+    - libx11-dev
+    - libxmu-dev
+    - pkg-config
+    stage-packages:
+    - libgd3
+    - libglib2.0-0
+    - libx11-6
+    - libxmu6
+    override-build: |
+      set -o nounset
+
+      sed \
+        --in-place \
+        "s#PREFIX=.*#PREFIX=${SNAPCRAFT_PART_INSTALL}#" \
+        Makefile
+      snapcraftctl build
+    stage:
+    - bin/*
+    - '**/*.so*'
+    - usr/share/doc/*/copyright
+
+  launchers:
+    source: snap/local/launchers
+    plugin: dump
+    organize:
+      '*': bin/
+
+apps:
+  xseticon:
+    adapter: full
+    command: bin/xseticon
+    command-chain:
+    - bin/xseticon-launch
+
+plugs:
+  # Regular file access
+  home:
+  removable-media: # Non-A/C
+
+  # X server access
+  x11:
