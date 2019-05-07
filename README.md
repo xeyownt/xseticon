@@ -41,6 +41,11 @@ make
 # Install
 sudo cp xseticon /usr/local/bin
 ```
+Using Snap (requires [snapd](https://docs.snapcraft.io/installing-snapd/6735)):
+
+```bash
+sudo snap install xseticon
+```
 
 Author
 ======
