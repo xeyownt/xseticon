@@ -21,11 +21,11 @@ Usage
 Build and install instructions
 ==============================
 
-On Ubuntu:
+On Ubuntu / Debian:
 
 ``` bash
 # Install dependencies
-sudo apt install libxmu-headers libgd-dev libxmu-dev
+sudo apt install libxmu-headers libgd-dev libxmu-dev libglib2.0-dev
 # Build
 make
 # Install
