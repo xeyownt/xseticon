@@ -203,7 +203,7 @@ void abortprog(gchar* fname)
  */
 gdImagePtr get_png_image_from_file(gchar *filename)
 {
-  MagickWandGenesis();
+  MagickWandGenesis(); // Starts MagickWand
   gdImagePtr imagePtr = NULL; // Default value, if the image can't be loaded then the result is going to be NULL
   MagickWand *wand = NewMagickWand();
   PixelWand *pixelWand = NewPixelWand();
@@ -211,14 +211,14 @@ gdImagePtr get_png_image_from_file(gchar *filename)
   MagickSetBackgroundColor(wand, pixelWand); // The background has to be assigned before loading the file image
   // to avoid white backgrounds (happens with svg files)
   MagickReadImage(wand, filename); // Reads the file
-  int success = MagickSetImageFormat(wand, "png"); // Converts the file to PNG format
-  if (success) { // If the conversion is successful then it creates an imagePtr from the content of the file
+  int success = MagickSetImageFormat(wand, "png"); // Converts the wand to PNG format
+  if (success) { // If the conversion is successful then it creates an imagePtr from the content of the wand
     size_t length;
-    unsigned char *info = MagickGetImageBlob(wand, &length); // Gets image data and size to create an imagePtr
+    unsigned char *info = MagickGetImageBlob(wand, &length); // Gets image data and size from the wand
     imagePtr = gdImageCreateFromPngPtr((int) length, info); // Creates imagePtr from png data
   }
   DestroyMagickWand(wand);
-  MagickWandTerminus();
+  MagickWandTerminus(); // Ends MagickWand
   return imagePtr;
 }
 

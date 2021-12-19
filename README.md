@@ -2,7 +2,7 @@ Xterm, and likely many other X11 programs, do not set themselves window icons, w
 
 Usage
 =====
-    usage: xseticon [options] path/to/icon.png
+    usage: xseticon [options] path/to/icon
     options:
       -name     : apply icon to the window of the name supplied
       -id   : apply icon to the window id supplied
@@ -15,7 +15,7 @@ Usage
     selected using the cursor.
     
     Hints:
-      xseticon -id "$WINDOWID" path/to/icon.png
+      xseticon -id "$WINDOWID" path/to/icon
     Will set the icon for an xterm.xseticon from Paul Evans (http://www.leonerd.org.uk/).
 
 Build and install instructions
@@ -25,7 +25,7 @@ On Ubuntu / Debian:
 
 ``` bash
 # Install dependencies
-sudo apt install libxmu-headers libgd-dev libxmu-dev libglib2.0-dev
+sudo apt install libxmu-headers libgd-dev libxmu-dev libglib2.0-dev libmagickwand-dev
 # Build
 make
 # Install
@@ -35,7 +35,7 @@ On EL7:
 
 ```bash
 # Install dependencies
-sudo yum install libXmu-devel gd gd-devel glib2-devel
+sudo yum install libXmu-devel gd gd-devel glib2-devel ImageMagick-devel
 # Build
 make
 # Install
