@@ -24,10 +24,10 @@
 #include <glib.h>
 
 #include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xatom.h>
 #include <X11/Xmu/WinUtil.h>
+#include <MagickWand/MagickWand.h>
 
 #include <gd.h>
 
@@ -134,11 +134,8 @@ Window Select_Window_Args(Display* dpy, int screen, int* rargc, char* argv[])
       NXTOPT;
       if (verbose)
         printf("Selecting window by ID %s\n", OPTION);
-      w=0;
-      sscanf(OPTION, "0x%lx", &w);
-      if (!w)
-        sscanf(OPTION, "%ld", &w);
-      if (!w)
+      w = strtoul(OPTION, NULL, 0);
+      if (!w || (w == LONG_MIN || w == LONG_MAX))
         Fatal_Error("Invalid window id format: %s.", OPTION);
       continue;
     }
@@ -201,24 +198,43 @@ void abortprog(gchar* fname)
   exit(1);
 }
 
+/*
+ * Loads the filename with MagickWand a gdImagePtr from it if the file is valid if not returns NULL
+ */
+gdImagePtr get_png_image_from_file(gchar *filename)
+{
+  MagickWandGenesis();
+  gdImagePtr imagePtr = NULL; // Default value, if the image can't be loaded then the result is going to be NULL
+  MagickWand *wand = NewMagickWand();
+  PixelWand *pixelWand = NewPixelWand();
+  PixelSetColor(pixelWand, "transparent"); // Color for the background
+  MagickSetBackgroundColor(wand, pixelWand); // The background has to be assigned before loading the file image
+  // to avoid white backgrounds (happens with svg files)
+  MagickReadImage(wand, filename); // Reads the file
+  int success = MagickSetImageFormat(wand, "png"); // Converts the file to PNG format
+  if (success) { // If the conversion is successful then it creates an imagePtr from the content of the file
+    size_t length;
+    unsigned char *info = MagickGetImageBlob(wand, &length); // Gets image data and size to create an imagePtr
+    imagePtr = gdImageCreateFromPngPtr((int) length, info); // Creates imagePtr from png data
+  }
+  DestroyMagickWand(wand);
+  MagickWandTerminus();
+  return imagePtr;
+}
+
 /* Note:
  *  dispite the fact this routine specifically loads 32bit data, it needs to
  *  load it into an unsigned long int array, not a guint32 array. The
  *  XChangeProperty() call wants to see a native size array when format == 32,
  *  not necessarily a 32bit one.
  */
-
 void load_icon(gchar* filename, int* ndata, CARD32** data)
 {
-  FILE* iconfile = fopen(filename, "r");
+  gdImagePtr icon = get_png_image_from_file(filename);
 
-  if (!iconfile) {
-    abortprog("fopen()");
+  if (icon == NULL) {
+    abortprog("get_png_image_from_file(filename)");
   }
-
-  gdImagePtr icon = gdImageCreateFromPng(iconfile);
-
-  fclose(iconfile);
 
   int width, height;
 
@@ -297,16 +313,13 @@ int main(int argc, char* argv[])
     if (verbose)
       printf("Selecting window by mouse...\n");
     window = Select_Window_Mouse(display, screen);
-    if (window != None) {
-      Window root;
-      int dummyi;
-      unsigned int dummy;
-
-      if (XGetGeometry (display, window, &root, &dummyi, &dummyi,
-                        &dummy, &dummy, &dummy, &dummy)
-          && window != root)
-          window = XmuClientWindow (display, window);
-    }
+    Window root;
+    int dummyi;
+    unsigned int dummy;
+    if (XGetGeometry(display, window, &root, &dummyi, &dummyi,
+                     &dummy, &dummy, &dummy, &dummy)
+        && window != root)
+      window = XmuClientWindow(display, window);
   }
 
   if (verbose)
@@ -320,10 +333,10 @@ int main(int argc, char* argv[])
   guint nelements;
   CARD32* data;
 
-  load_icon(argv[argindex], &nelements, &data);
+  load_icon(argv[argindex], (int *) &nelements, &data);
 
-  int result = XChangeProperty(display, window, property, XA_CARDINAL, 32, PropModeReplace, 
-      (gchar*)data, nelements);
+  int result = XChangeProperty(display, window, property, XA_CARDINAL, 32, PropModeReplace,
+      (guchar*) data, (int) nelements);
 
   if(!result)
     abortprog("XChangeProperty");
