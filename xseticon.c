@@ -199,7 +199,7 @@ void abortprog(gchar* fname)
 }
 
 /*
- * Loads the filename with MagickWand a gdImagePtr from it if the file is valid if not returns NULL
+ * Loads the filename with MagickWand and creates a gdImagePtr from it if the file is valid if not returns NULL
  */
 gdImagePtr get_png_image_from_file(gchar *filename)
 {
