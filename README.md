@@ -7,7 +7,7 @@ Usage
       -name     : apply icon to the window of the name supplied
       -id   : apply icon to the window id supplied
     
-    Sets the window icon to the specified .png image. The image is loaded from
+    Sets the window icon to the specified image. The image is loaded from
     the file at runtime and sent to the X server; thereafter the file does not
     need to exist, and can be deleted/renamed/modified without the X server or
     window manager noticing.
