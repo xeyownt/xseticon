@@ -41,6 +41,16 @@ make
 # Install
 sudo cp xseticon /usr/local/bin
 ```
+On openSUSE15:
+
+```bash
+# Install dependencies
+sudo zypper in gd-devel
+# Build
+make
+# Install
+sudo cp xseticon /usr/local/bin
+```
 Using Snap (requires [snapd](https://docs.snapcraft.io/installing-snapd/6735)):
 
 ```bash
