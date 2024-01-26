@@ -45,7 +45,7 @@ On openSUSE15:
 
 ```bash
 # Install dependencies
-sudo zypper in gd-devel
+sudo zypper in libXmu-devel glib2-devel gd-devel
 # Build
 make
 # Install
