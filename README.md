@@ -4,8 +4,10 @@ Usage
 =====
     usage: xseticon [options] path/to/icon.png
     options:
-      -name     : apply icon to the window of the name supplied
-      -id   : apply icon to the window id supplied
+      -name  : apply icon to the window of the name supplied
+      -id    : apply icon to the window id supplied
+      -class : apply icon to the window matching the class supplied
+
     
     Sets the window icon to the specified .png image. The image is loaded from
     the file at runtime and sent to the X server; thereafter the file does not
